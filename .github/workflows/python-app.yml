@@ -14,24 +14,23 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.5,21"
+          version: "0.5.21"
       - name: "Setup Python"
         uses: actions/setup-python@v3
-        with:
-          python-version-file: "./python-version"
       - name: Install dependencies
         run: |
           uv sync --locked --all-extras --dev
+          uv add ruff
       - name: Lint with ruff
         run: |
-          ruff .
+          uv run ruff check --output-format=github --exit-zero .
       - name: Test with pytest
         run: |
           uv run pytest
